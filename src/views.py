@@ -1,6 +1,6 @@
 from django.contrib.auth.decorators import login_required
 from django.contrib.admin.views.decorators import staff_member_required
-from django.shortcuts import render,get_object_or_404
+from django.shortcuts import render,get_object_or_404,redirect
 from .models import BlogPost
 from .forms import BlogPostModelForm
 
@@ -26,16 +26,23 @@ def blog_post_detail_view(request,slug):
 	context={"object":obj}
 	return render(request,"blog/detail.html",context)
 
+@staff_member_required
 def blog_post_update_view(request,slug):
 	obj=get_object_or_404(BlogPost,slug=slug)
 	form=BlogPostModelForm(request.POST or None,instance=obj)
-	print(form.is_valid())
 	if form.is_valid():
 		form.save()
+		return redirect(f"/blog/{obj.slug}")
 	context={'form':form,'title':f"Update {obj.title}"}
 	return render(request,"form.html",context)
 
+
+
+@staff_member_required
 def blog_post_delete_view(request,slug):
 	obj=get_object_or_404(BlogPost,slug=slug)
+	if request.method=="POST":
+		obj.delete()
+		return redirect("/blog")
 	context={"object":obj, 'form':None}
 	return render(request,"blog/delete.html",context)

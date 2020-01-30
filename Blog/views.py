@@ -1,9 +1,12 @@
 from django.http import HttpResponse
 from django.shortcuts import render
 from .forms import ContactForm
+from src.models import BlogPost
 
 def home_page(request):
-    context={"title":"Hello Boy", "my_list":[1,2,3,4,5,6]}
+    my_title = "Hello there...."
+    qs = BlogPost.objects.all()[:5]
+    context = {"title": "Welcome to Try Django", 'blog_list': qs}
     return render(request, "index.html", context)
 
 

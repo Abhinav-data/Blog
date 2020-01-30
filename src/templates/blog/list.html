@@ -4,7 +4,9 @@
 
 {% block body %}
 
-{% for obj in object_list %}
-<h1>{{obj.title}}</h1>
-{% endfor %}
+<div class='row'>
+    {% for object in object_list %}
+        {% include 'blog/list-inline.html' with blog_post=object truncate=True detail=False %}
+    {% endfor %}
+</div>
 {% endblock %}
